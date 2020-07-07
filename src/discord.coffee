@@ -70,7 +70,17 @@ class DiscordBot extends Adapter
         @client.on 'messageReactionRemove', (message, user) => 
           @.message_reaction('reaction_removed', message, user)
 
-        @client.login(@options.token).catch(@robot.logger.error)
+        @.connect()
+
+     connect: =>
+        @robot.logger.info 'Connecting to discord'
+        @client.login(@options.token)
+        .then(() => @robot.logger.info 'Connected to discord')
+        .catch((err) => 
+          @robot.logger.error err.message
+          @robot.logger.info 'Connection error, retrying in 5 seconds'
+          setTimeout @.connect, 5000
+        )
 
      _map_user: (discord_user, channel_id) -> 
         user                      = @robot.brain.userForId discord_user.id
