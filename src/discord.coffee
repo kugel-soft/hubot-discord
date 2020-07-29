@@ -63,6 +63,8 @@ class DiscordBot extends Adapter
         @client.on 'guildMemberAdd', @.enter
         @client.on 'guildMemberRemove', @.leave
         @client.on 'disconnected', @.disconnected
+        @client.on 'shardDisconnect', @.shardDisconnect
+        @client.on 'shardReconnecting', @.shardReconnecting
         @client.on 'error', (error) =>
           @robot.logger.error "The client encountered an error: #{error}"
         @client.on 'messageReactionAdd', (message, user)  => 
@@ -173,6 +175,12 @@ class DiscordBot extends Adapter
 
      disconnected: =>
         @robot.logger.info "#{@robot.name} Disconnected, will auto reconnect soon..."
+        
+     shardDisconnect: =>
+        @robot.logger.info "#{@robot.name} ShardDisconnected"
+        
+     shardReconnecting: =>
+        @robot.logger.info "#{@robot.name} ShardReconnecting"
 
      send: (envelope, messages...) ->
         for message in messages
